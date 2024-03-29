@@ -1,0 +1,5 @@
+const PARENT_CHANNEL_ID = '925748371002654720';
+
+module.exports = {
+	PARENT_CHANNEL_ID,
+};
