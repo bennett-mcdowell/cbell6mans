@@ -2,7 +2,7 @@ const { ChannelType, PermissionsBitField } = require('discord.js');
 const { getLatestQueueIdFromDatabase, getTeamInlobby_players } = require('../utils/retrieveFromDatabase');
 const client = require('../index');
 const { queueSize } = require('../utils/manageQueue');
-const { PARENT_CHANNEL_ID } = require('../utils/channelIds');
+const { PARENT_CHANNEL_ID, BOT_ROLE_ID, STAFF_ROLE_ID } = require('../utils/channelIds');
 
 module.exports = async (interaction) => {
 	const guild = interaction.guild;
@@ -22,6 +22,14 @@ module.exports = async (interaction) => {
 			{
 				id: guild.id,
 				deny: [PermissionsBitField.Flags.Connect],
+			},
+			{
+				id: BOT_ROLE_ID,
+				allow: [PermissionsBitField.Flags.Connect, PermissionsBitField.Flags.ViewChannel],
+			},
+			{
+				id: STAFF_ROLE_ID,
+				allow: [PermissionsBitField.Flags.Connect, PermissionsBitField.Flags.ViewChannel],
 			},
 			...team1.map(player => ({
 				id: player,

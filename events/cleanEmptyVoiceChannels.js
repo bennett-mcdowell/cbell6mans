@@ -2,7 +2,7 @@ const client = require('../index');
 
 // Constants
 const PARENT_CATEGORY_ID = '925748371002654720'; // 6mans category
-const EXCLUDED_CHANNEL_ID = '1223084653846724638'; // Hangout
+const EXCLUDED_CHANNEL_ID = '1223366288806510704'; // Lounge
 const EMPTY_CHANNEL_TIMEOUT = 10 * 1000; // 10 seconds
 
 // Listener for voice state updates
