@@ -9,13 +9,7 @@ module.exports = {
 		.setDMPermission(false),
 	async execute(interaction) {
 		const userId = interaction.user.id;
-		const storedChannelId = await get6mansChannelId(6);
 
-		// Check if the command is being executed in the allowed channel
-		const currentChannelId = interaction.channel.id;
-		if (currentChannelId !== storedChannelId) {
-			return interaction.reply({content: 'This command can only be executed in the 6mans-queue channel.', ephemeral: true});
-		}
 
 
 		// Checks if user is in queue

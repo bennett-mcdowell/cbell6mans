@@ -8,13 +8,7 @@ module.exports = {
 		.setDescription('Shows the queue status')
 		.setDMPermission(false),
 	async execute(interaction) {
-		const storedChannelId = await get6mansChannelId(6);
 
-		// Check if the command is being executed in the allowed channel
-		const currentChannelId = interaction.channel.id;
-		if (currentChannelId !== storedChannelId) {
-			return interaction.reply({content: 'This command can only be executed in 6mans-report-game channel.', ephemeral: true});
-		}
 
 		// Displays queue as embed
 		const embed = new EmbedBuilder()
