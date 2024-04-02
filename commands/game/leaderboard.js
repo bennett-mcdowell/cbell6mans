@@ -73,14 +73,15 @@ async function sendLeaderboardPage(interaction, rank, page) {
 	const collector = interaction.channel.createMessageComponentCollector({ filter, time: 60000 });
 
 	collector.on('collect', async i => {
-		if (i.customId === 'previous_page') {
-			page--;
-		} else if (i.customId === 'next_page') {
-			page++;
+		let newPage = page;
+		if (i.customId === 'previous_page' && page > 0) {
+			newPage--;
+		} else if (i.customId === 'next_page' && page < totalPages - 1) {
+			newPage++;
 		}
 
-		await sendLeaderboardPage(i, rank, page);
 		await i.deferUpdate();
+		await sendLeaderboardPage(interaction, rank, newPage);
 	});
 
 	collector.on('end', () => interaction.editReply({ components: [] }));
