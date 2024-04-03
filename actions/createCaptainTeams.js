@@ -12,6 +12,18 @@ module.exports = async (interaction) => {
 	// Select two random captains
 	const captains = players.sort(() => 0.5 - Math.random()).slice(0, 2);
 
+	// Announce captains in the chat
+	const captainAnnouncementEmbed = new EmbedBuilder()
+		.setTitle('Captains Selected')
+		.setDescription('The captains have been chosen:')
+		.setColor(0x0099ff)
+		.addFields(captains.map((captain, index) => {
+			const captainUser = interaction.guild.members.cache.get(captain);
+			return { name: `Captain ${index + 1}`, value: captainUser ? captainUser.toString() : 'Unknown User', inline: true };
+		}));
+
+	await interaction.channel.send({ embeds: [captainAnnouncementEmbed] });
+
 	// Remove captains from available players
 	let availablePlayers = players.filter(player => !captains.includes(player));
 
