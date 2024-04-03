@@ -23,9 +23,13 @@ module.exports = async (interaction) => {
 
 		// Add players to the embed
 		await Promise.all(availablePlayers.map(async player => {
-			const stats = await getPlayerStats(player.id); // Assuming player.id is the userId
+			console.log(player.id);
+			const stats = await getPlayerStats(player.id);
 			if (stats) {
-				const statsString = `Elo Rank: ${stats.eloRank}\nWins: ${stats.wins}\nLosses: ${stats.losses}\nElo: ${stats.elo}`;
+				const winRatio = stats.wins + stats.losses !== 0 ?
+					((stats.wins / (stats.wins + stats.losses)) * 100).toFixed(2) : '0';
+
+				const statsString = `Elo Rank: ${stats.eloRank} / Elo: ${stats.elo} / Wins: ${stats.wins} / Losses: ${stats.losses} / Win %: ${winRatio}`;
 				embed.addFields({ name: player.name, value: statsString, inline: true });
 			} else {
 				embed.addFields({ name: player.name, value: 'No stats available', inline: true });
