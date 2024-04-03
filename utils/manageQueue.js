@@ -5,7 +5,7 @@ const { get6mansChannelId, get6mansSeasonId , getLatestQueueIdFromDatabase }
 // Temporarily stores the player ids in an array to be added to the database
 const queue = [];
 
-const queueSize = 3;
+const queueSize = 6;
 
 async function removeFromQueue(userId) {
 	const userIndex = queue.indexOf(userId);
