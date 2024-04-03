@@ -41,8 +41,22 @@ module.exports = async (interaction) => {
 		random: 0,
 	};
 
+	// Set to track users who have already voted
+	const votedUsers = new Set();
+
 	collector.on('collect', async (btnInteraction) => {
-		if (!eligiblePlayerIds.includes(btnInteraction.user.id)) {
+		const userId = btnInteraction.user.id;
+
+		// Check if user has already voted
+		if (votedUsers.has(userId)) {
+			await btnInteraction.reply({
+				content: "You have already voted.",
+				ephemeral: true,
+			});
+			return;
+		}
+
+		if (!eligiblePlayerIds.includes(userId)) {
 			// User is not eligible to vote
 			await btnInteraction.reply({
 				content: "You are not eligible to vote.",
@@ -59,8 +73,13 @@ module.exports = async (interaction) => {
 			votes.random++;
 		}
 
+		// Add user to voted users set
+		votedUsers.add(userId);
+
 		// Check if all 6 players have voted
 		if (votes.captains + votes.random === queueSize) {
+			collector.stop(); // Stop the collector
+
 			// Determine the result based on votes
 			let result;
 			if (votes.captains > votes.random) {
