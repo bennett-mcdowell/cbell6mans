@@ -101,7 +101,7 @@ module.exports = async (interaction) => {
 		await channel.send(`The vote result is: ${result}`);
 
 		if (result === 'Captains') {
-			createRandomTeams(interaction);
+			createCaptainTeams(interaction);
 		} else if (result === 'Random') {
 			createRandomTeams(interaction);
 		}
