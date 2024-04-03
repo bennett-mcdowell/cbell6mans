@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const database = require('../../utils/database');
-const { getPlayerStatsPage } = require('../../utils/retrieveFromDatabase');
+const { getPlayerStatsPage, get6mansChannelId } = require('../../utils/retrieveFromDatabase');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -8,8 +8,17 @@ module.exports = {
 		.setDescription('Shows the leaderboard for any rank')
 		.addStringOption(option =>
 			option.setName('rank')
-				.setDescription('Enter the rank you want to see, leave blank to see all ranks')),
+				.setDescription('Enter the rank you want to see, leave blank to see all ranks'))
+		.setDMPermission(false),
 	async execute(interaction) {
+		const storedChannelId = await get6mansChannelId(6);
+
+		// Check if the command is being executed in the allowed channel
+		const currentChannelId = interaction.channel.id;
+		if (currentChannelId !== storedChannelId) {
+			return interaction.reply({content: 'This command can only be executed in 6mans-lobby channel.', ephemeral: true});
+		}
+
 		await interaction.deferReply();
 		const rank = interaction.options.getString('rank') || 'all';
 		const page = 0; // Start from the first page

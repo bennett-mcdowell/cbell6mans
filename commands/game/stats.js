@@ -4,16 +4,34 @@ const { get6mansChannelId, getPlayerStats } = require('../../utils/retrieveFromD
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('stats')
-		.setDescription('Shows your stats')
-		.setDMPermission(false),
+		.setDescription('Shows your stats or the stats of the mentioned player')
+		.addStringOption(option =>
+			option.setName('player')
+				.setDescription('Mention the player or leave blank to see your stats')),
 	async execute(interaction) {
-		const userId = interaction.user.id;
 		const storedChannelId = await get6mansChannelId(6);
 
 		// Check if the command is being executed in the allowed channel
 		const currentChannelId = interaction.channel.id;
 		if (currentChannelId !== storedChannelId) {
-			return interaction.reply({content: 'This command can only be executed in 6mans-report-game channel.', ephemeral: true});
+			return interaction.reply({content: 'This command can only be executed in 6mans-lobby channel.', ephemeral: true});
+		}
+
+		let userId = interaction.user.id; // Default to the user's ID
+		let userName = interaction.user.username; // Default to the user's name
+		const mentionedUser = interaction.options.getString('player');
+
+		if (mentionedUser) {
+			// Extract the mentioned user's ID from the string input
+			const match = mentionedUser.match(/^<@!?(\d+)>$/);
+			if (match) {
+				userId = match[1]; // Extract the user ID from the mention
+				// Fetch the mentioned user's name
+				const user = await interaction.client.users.fetch(userId);
+				if (user) {
+					userName = user.username;
+				}
+			}
 		}
 
 		const stats = await getPlayerStats(userId);
@@ -25,7 +43,7 @@ module.exports = {
 				((stats.wins / (stats.wins + stats.losses)) * 100).toFixed(2) : '0';
 
 			const embed = new EmbedBuilder()
-				.setTitle(`Stats for ${interaction.user.username}`)
+				.setTitle(`Stats for ${userName}`)
 				.addFields({ name: 'Player', value: `<@${userId}>`, inline: true })
 				.addFields({ name: 'Rank', value: String(stats.eloRank), inline: true })
 				.addFields({ name: 'MMR', value: String(stats.elo), inline: true })

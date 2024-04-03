@@ -20,7 +20,7 @@ module.exports = {
 		// Check if the command is being executed in the allowed channel
 		const currentChannelId = interaction.channel.id;
 		if (currentChannelId !== storedChannelId) {
-			return interaction.reply({content: 'This command can only be executed in 6mans-report-game channel.', ephemeral: true});
+			return interaction.reply({content: 'This command can only be executed in report-games channel.', ephemeral: true});
 		}
 
 		// Check if the queue has been reported

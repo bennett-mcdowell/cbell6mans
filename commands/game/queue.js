@@ -17,7 +17,7 @@ module.exports = {
 		// Check if the command is being executed in the allowed channel
 		const currentChannelId = interaction.channel.id;
 		if (currentChannelId !== storedChannelId) {
-			return interaction.reply({content: 'This command can only be executed in the 6mans-queue channel.', ephemeral: true});
+			return interaction.reply({content: 'This command can only be executed in the 6mans-lobby channel.', ephemeral: true});
 		}
 
 		// Adds player to database if is not already in
