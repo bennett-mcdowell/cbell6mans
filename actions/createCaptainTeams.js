@@ -25,8 +25,7 @@ module.exports = async (interaction) => {
 		await Promise.all(availablePlayers.map(async player => {
 			const stats = await getPlayerStats(player.id); // Assuming player.id is the userId
 			if (stats) {
-				const { eloRank, wins, losses, elo } = stats;
-				const statsString = `Elo Rank: ${eloRank}\nWins: ${wins}\nLosses: ${losses}\nElo: ${elo}`;
+				const statsString = `Elo Rank: ${stats.eloRank}\nWins: ${stats.wins}\nLosses: ${stats.losses}\nElo: ${stats.elo}`;
 				embed.addFields({ name: player.name, value: statsString, inline: true });
 			} else {
 				embed.addFields({ name: player.name, value: 'No stats available', inline: true });
