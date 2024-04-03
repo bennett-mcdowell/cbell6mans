@@ -33,7 +33,7 @@ async function sendLeaderboardPage(interaction, rank, page) {
 		return;
 	}
 
-	const itemsPerPage = 1;
+	const itemsPerPage = 10;
 	const playerStatsPage = await getPlayerStatsPage(rank, page, itemsPerPage);
 	const totalPlayers = await getTotalPlayerCount(rank);
 	const totalPages = Math.ceil(totalPlayers / itemsPerPage);
