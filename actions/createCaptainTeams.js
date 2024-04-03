@@ -28,62 +28,39 @@ module.exports = async (interaction) => {
 	let availablePlayers = players.filter(player => !captains.includes(player));
 
 	async function handleCaptainSelection(captain) {
-		const captainName = await client.users.fetch(captain);
-		const embed = new EmbedBuilder()
-			.setTitle('Choose your team')
-			.setDescription('Click on the buttons to choose players for your team.');
+		// Fetching captain user information
+		const captainUser = await client.users.fetch(captain);
 
-		// Add players to the embed
-		await Promise.all(availablePlayers.map(async player => {
-			console.log(player.id);
-			const stats = await getPlayerStats(player.id);
-			if (stats) {
-				const winRatio = stats.wins + stats.losses !== 0 ?
-					((stats.wins / (stats.wins + stats.losses)) * 100).toFixed(2) : '0';
+		// Simplified embed just for testing
+		const simpleEmbed = new EmbedBuilder()
+			.setTitle('Test DM')
+			.setDescription('This is a test DM with a button.')
+			.setColor(0x0099FF); // Blue color
 
-				const statsString = `Elo Rank: ${stats.eloRank} / Elo: ${stats.elo} / Wins: ${stats.wins} / Losses: ${stats.losses} / Win %: ${winRatio}`;
-				embed.addFields({ name: player.name, value: statsString, inline: true });
-			} else {
-				embed.addFields({ name: player.name, value: 'No stats available', inline: true });
-			}
-		}));
-
-		// Split availablePlayers into chunks of 5
-		const chunks = [];
-		for (let i = 0; i < availablePlayers.length; i += 5) {
-			chunks.push(availablePlayers.slice(i, i + 5));
-		}
-
-		// Create an ActionRow for each chunk
-		const row = chunks.map(chunk =>
-			new ActionRowBuilder()
-				.addComponents(chunk.map(player =>
-					new ButtonBuilder()
-						.setCustomId(player.id.toString())
-						.setLabel(player.name)
-						.setStyle('PRIMARY')
-				))
+		// Simplified button
+		const testButton = new ActionRowBuilder().addComponents(
+			new ButtonBuilder()
+				.setCustomId('test_button')
+				.setLabel('Test Button')
+				.setStyle('PRIMARY'),
 		);
 
-		const message = await captainName.send({ embeds: [embed], components: [row] });
-		const filter = (i) => i.user.id === captain.id && availablePlayers.some(player => player.id.toString() === i.customId);
+		// Sending the simplified embed and button to the captain
+		const message = await captainUser.send({ embeds: [simpleEmbed], components: [testButton] });
 
+		// Listener for button interaction (this part remains for your reference, might not be needed for the test)
+		const filter = (i) => i.user.id === captain && i.customId === 'test_button';
 		const collector = message.createMessageComponentCollector({ filter, max: 1, time: 60000 });
-		return new Promise((resolve, reject) => {
-			collector.on('collect', async (i) => {
-				const selectedPlayerId = i.customId;
-				const selectedPlayer = availablePlayers.find(player => player.id.toString() === selectedPlayerId);
-				availablePlayers = availablePlayers.filter(player => player.id.toString() !== selectedPlayerId);
-				await i.update({ content: `You have selected ${selectedPlayer.name}.`, embeds: [], components: [] });
-				resolve(selectedPlayer);
-			});
 
-			collector.on('end', collected => {
-				if (collected.size === 0) {
-					captainName.send('You took too long to select a player.');
-					reject(new Error('Selection timeout'));
-				}
-			});
+		collector.on('collect', async (i) => {
+			// Logic after button is pressed
+			await i.update({ content: `Button clicked.`, embeds: [], components: [] });
+		});
+
+		collector.on('end', collected => {
+			if (collected.size === 0) {
+				captainUser.send('You took too long to respond.');
+			}
 		});
 	}
 
