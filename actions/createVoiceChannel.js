@@ -90,12 +90,16 @@ module.exports = async (interaction) => {
 
 	const team1VoiceChannel = await createTeamVoiceChannel('Team 1', queueSize / 2, [
 		{ id: guild.id, deny: [PermissionsBitField.Flags.Connect] },
+		{ id: BOT_ROLE_ID, allow: [PermissionsBitField.Flags.Connect, PermissionsBitField.Flags.ViewChannel], },
+		{ id: STAFF_ROLE_ID, allow: [PermissionsBitField.Flags.Connect, PermissionsBitField.Flags.ViewChannel], },
 		...team1.map(player => ({ id: player, allow: [PermissionsBitField.Flags.Connect, PermissionsBitField.Flags.ViewChannel] })),
 		...team2.map(player => ({ id: player, deny: [PermissionsBitField.Flags.Connect] })),
 	]);
 
 	const team2VoiceChannel = await createTeamVoiceChannel('Team 2', queueSize / 2, [
 		{ id: guild.id, deny: [PermissionsBitField.Flags.Connect] },
+		{ id: BOT_ROLE_ID, allow: [PermissionsBitField.Flags.Connect, PermissionsBitField.Flags.ViewChannel], },
+		{ id: STAFF_ROLE_ID, allow: [PermissionsBitField.Flags.Connect, PermissionsBitField.Flags.ViewChannel], },
 		...team1.map(player => ({ id: player, deny: [PermissionsBitField.Flags.Connect] })),
 		...team2.map(player => ({ id: player, allow: [PermissionsBitField.Flags.Connect, PermissionsBitField.Flags.ViewChannel] })),
 	]);
