@@ -36,15 +36,22 @@ module.exports = async (interaction) => {
 			}
 		}));
 
+		// Split availablePlayers into chunks of 5
+		const chunks = [];
+		for (let i = 0; i < availablePlayers.length; i += 5) {
+			chunks.push(availablePlayers.slice(i, i + 5));
+		}
 
-
-		const row = new ActionRowBuilder()
-			.addComponents(availablePlayers.map(player =>
-				new ButtonBuilder()
-					.setCustomId(player.id.toString())
-					.setLabel(player.name)
-					.setStyle('PRIMARY')
-			));
+		// Create an ActionRow for each chunk
+		const row = chunks.map(chunk =>
+			new ActionRowBuilder()
+				.addComponents(chunk.map(player =>
+					new ButtonBuilder()
+						.setCustomId(player.id.toString())
+						.setLabel(player.name)
+						.setStyle('PRIMARY')
+				))
+		);
 
 		const message = await captainName.send({ embeds: [embed], components: [row] });
 		const filter = (i) => i.user.id === captain.id && availablePlayers.some(player => player.id.toString() === i.customId);
