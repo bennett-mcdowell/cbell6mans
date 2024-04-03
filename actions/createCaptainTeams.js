@@ -1,4 +1,4 @@
-const { ActionRowBuilder, EmbedBuilder, ButtonBuilder} = require('discord.js');
+const { ActionRowBuilder, EmbedBuilder, ButtonBuilder, ButtonStyle } = require('discord.js');
 const { getQueueList, getPlayerStats } = require('../utils/retrieveFromDatabase');
 const { updateTeamInlobby_players } = require('../utils/updateInDatabase');
 const client = require('../index');
@@ -42,7 +42,7 @@ module.exports = async (interaction) => {
 			new ButtonBuilder()
 				.setCustomId('test_button')
 				.setLabel('Test Button')
-				.setStyle('PRIMARY'),
+				.setStyle(ButtonStyle.Primary),
 		);
 
 		// Sending the simplified embed and button to the captain
