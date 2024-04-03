@@ -34,6 +34,30 @@ module.exports = {
 		// Adds user to queue
 		queue.push(interaction.user.id);
 
+		// Initialize or reset the timer when a new user is added to the queue
+		if (queue.length === 1) {
+			if (this.queueTimeout) clearTimeout(this.queueTimeout); // Clear existing timer
+
+			this.queueTimeout = setTimeout(async () => {
+				queue.length = 0;
+
+				// Prepare the embed message
+				const timeoutEmbed = new EmbedBuilder()
+					.setColor(0xff0000)
+					.setTitle('Queue Cleared')
+					.setDescription('The queue has been cleared due to inactivity.')
+					.setTimestamp();
+
+				// Sends the embed message to the channel
+				const channel = interaction.channel;
+				await channel.send({ embeds: [timeoutEmbed] });
+
+				// Clears the timeout variable
+				clearTimeout(this.queueTimeout);
+				this.queueTimeout = null;
+			}, 300000); // 5 minutes in milliseconds
+		}
+
 		// Displays queue as embed
 		const embed = new EmbedBuilder()
 			.setTitle('Queue')
