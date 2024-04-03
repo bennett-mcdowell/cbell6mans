@@ -22,10 +22,18 @@ module.exports = async (interaction) => {
 			.setDescription('Click on the buttons to choose players for your team.');
 
 		// Add players to the embed
-		availablePlayers.forEach(player => {
-			const stats = getPlayerStats(player);
-			embed.addFields(player.name, stats, true);
-		});
+		await Promise.all(availablePlayers.map(async player => {
+			const stats = await getPlayerStats(player.id); // Assuming player.id is the userId
+			if (stats) {
+				const { eloRank, wins, losses, elo } = stats;
+				const statsString = `Elo Rank: ${eloRank}\nWins: ${wins}\nLosses: ${losses}\nElo: ${elo}`;
+				embed.addFields({ name: player.name, value: statsString, inline: true });
+			} else {
+				embed.addFields({ name: player.name, value: 'No stats available', inline: true });
+			}
+		}));
+
+
 
 		const row = new ActionRowBuilder()
 			.addComponents(availablePlayers.map(player =>
