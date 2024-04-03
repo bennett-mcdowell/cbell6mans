@@ -19,6 +19,7 @@ module.exports = {
 
 		let userId = interaction.user.id; // Default to the user's ID
 		let userName = interaction.user.username; // Default to the user's name
+		let userAvatar = interaction.user.displayAvatarURL(); // Default to the user's avatar
 		const mentionedUser = interaction.options.getString('player');
 
 		if (mentionedUser) {
@@ -26,10 +27,11 @@ module.exports = {
 			const match = mentionedUser.match(/^<@!?(\d+)>$/);
 			if (match) {
 				userId = match[1]; // Extract the user ID from the mention
-				// Fetch the mentioned user's name
+				// Fetch the mentioned user's name and avatar
 				const user = await interaction.client.users.fetch(userId);
 				if (user) {
 					userName = user.username;
+					userAvatar = user.displayAvatarURL();
 				}
 			}
 		}
@@ -50,7 +52,7 @@ module.exports = {
 				.addFields({ name: 'Wins', value: String(stats.wins), inline: true })
 				.addFields({ name: 'Losses', value: String(stats.losses), inline: true })
 				.addFields({ name: 'Win Ratio', value: `${winRatio}%`, inline: true })
-				.setThumbnail(interaction.user.displayAvatarURL())
+				.setThumbnail(userAvatar) // Use the mentioned user's avatar
 				.setTimestamp()
 				.setColor(0xE74C3C);
 
