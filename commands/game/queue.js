@@ -55,7 +55,7 @@ module.exports = {
 				// Clears the timeout variable
 				clearTimeout(this.queueTimeout);
 				this.queueTimeout = null;
-			}, 300000); // 5 minutes in milliseconds
+			}, 900000); // 15 minutes in milliseconds
 		}
 
 		// Displays queue as embed
