@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const { get6mansChannelId , checkPlayerIdDatabase } = require('../../utils/retrieveFromDatabase');
+const { get6mansChannelId , checkPlayerIdDatabase, getLatestQueueIdFromDatabase } = require('../../utils/retrieveFromDatabase');
 const { insertPlayerIntoDatabase } = require('../../utils/insertplayer_stats');
 const { queue, insertIntolobby, insertIntolobby_players, queueSize } = require('../../utils/manageQueue');
 
@@ -76,8 +76,17 @@ module.exports = {
 
 		// If queue is full
 		if (queue.length === queueSize) {
+			await insertIntolobby();
+
+			// Loop through each player in the queue and add them to lobby_players
+			for (const player of queue) {
+				await insertIntolobby_players(player);
+			}
+
+			const queueId = getLatestQueueIdFromDatabase();
+
 			const fullEmbed = new EmbedBuilder()
-				.setTitle('Queue')
+				.setTitle(`Queue #${queueId}`)
 				.setTimestamp()
 				.setColor(0x0099ff);
 
@@ -95,12 +104,7 @@ module.exports = {
 			await channel.send({ embeds: [fullEmbed.toJSON()] });
 
 
-			await insertIntolobby();
 
-			// Loop through each player in the queue and add them to lobby_players
-			for (const player of queue) {
-				await insertIntolobby_players(player);
-			}
 			// Clear the queue after processing
 			queue.length = 0;
 
