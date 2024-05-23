@@ -35,7 +35,6 @@ module.exports = async (interaction) => {
 
 		// Add players to the embed
 		await Promise.all(availablePlayers.map(async player => {
-			console.log(player.id);
 			const stats = await getPlayerStats(player.id);
 			if (stats) {
 				const winRatio = stats.wins + stats.losses !== 0 ?
@@ -51,7 +50,7 @@ module.exports = async (interaction) => {
 		// Split availablePlayers into chunks of 5
 		const chunks = [];
 		for (let i = 0; i < availablePlayers.length; i += 5) {
-			chunks.push(availablePlayers.slice(i, i + 5));
+			chunks.push(availablePlayers.slice(i, Math.min(i + 5, availablePlayers.length)));
 		}
 
 		// Create an ActionRow for each chunk
@@ -65,8 +64,12 @@ module.exports = async (interaction) => {
 				))
 		);
 
-		const message = await captainName.send({ embeds: [embed], components: [row] });
-		const filter = (i) => i.user.id === captain.id && availablePlayers.some(player => player.id.toString() === i.customId);
+		const message = await captainName.send({ embeds: [embed], components: row });
+		const filter = (i) => {
+			const isUserCaptain = i.user.id === captain.id;
+			const isPlayerAvailable = availablePlayers.some(player => player.id.toString() === i.customId);
+			return !isUserCaptain && isPlayerAvailable;
+		};
 
 		const collector = message.createMessageComponentCollector({ filter, max: 1, time: 60000 });
 		return new Promise((resolve, reject) => {
@@ -94,7 +97,7 @@ module.exports = async (interaction) => {
 	// First pick
 	const firstPick = captains[0];
 	const firstPickedPlayer = await handleCaptainSelection(firstPick);
-	team1.push(firstPickedPlayer); // Add picked player to team1
+	team1.push(firstPickedPlayer.id); // Add picked player to team1
 	await updateTeamInlobby_players(firstPickedPlayer.id, 1);
 
 	// Second pick
@@ -103,14 +106,14 @@ module.exports = async (interaction) => {
 	for (let i = 0; i < 2; i++) {
 		const pickedPlayer = await handleCaptainSelection(secondPick);
 		secondPickedPlayers.push(pickedPlayer);
-		team2.push(pickedPlayer); // Add picked player to team2
-		await updateTeamInlobby_players(pickedPlayer[i].id, 2);
+		team2.push(pickedPlayer.id); // Add picked player to team2
+		await updateTeamInlobby_players(pickedPlayer.id, 2);
 	}
 
 	// Add remaining player to first pick's team
 	const remainingPlayer = availablePlayers[0];
 	if (remainingPlayer) {
-		team1.push(remainingPlayer);
+		team1.push(remainingPlayer.id);
 		await updateTeamInlobby_players(remainingPlayer.id, 1);
 	}
 

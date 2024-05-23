@@ -17,7 +17,6 @@ module.exports = async (interaction) => {
 		.setCustomId('captains')
 		.setLabel('Captains')
 		.setStyle(ButtonStyle.Success)
-		.setDisabled(true)
 
 	const randomButton = new ButtonBuilder()
 		.setCustomId('random')
