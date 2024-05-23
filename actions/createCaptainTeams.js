@@ -41,7 +41,11 @@ module.exports = async (interaction) => {
 					((stats.wins / (stats.wins + stats.losses)) * 100).toFixed(2) : '0';
 
 				const statsString = `Elo Rank: ${stats.eloRank} / Elo: ${stats.elo} / Wins: ${stats.wins} / Losses: ${stats.losses} / Win %: ${winRatio}`;
-				embed.addFields({ name: player.name, value: statsString, inline: true });
+				if (player.name && typeof player.name === 'string') {
+					embed.addFields({ name: player.name, value: statsString, inline: true });
+				} else {
+					console.error(`Invalid player name: ${player.name}`);
+				}
 			} else {
 				embed.addFields({ name: player.name, value: 'No stats available', inline: true });
 			}
