@@ -47,7 +47,11 @@ module.exports = async (interaction) => {
 					console.error(`Invalid player name: ${player.name}`);
 				}
 			} else {
-				embed.addFields({ name: player.name, value: 'No stats available', inline: true });
+				if (player.name && typeof player.name === 'string') {
+					embed.addFields({ name: player.name, value: 'No stats available', inline: true });
+				} else {
+					console.error(`Invalid player name: ${player.name}`);
+				}
 			}
 		}));
 
