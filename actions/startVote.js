@@ -77,7 +77,7 @@ module.exports = async (interaction) => {
 		votedUsers.add(userId);
 
 		// Check if all 6 players have voted
-		if (votes.captains + votes.random === queueSize) {
+		if (votes.captains + votes.random === (queueSize - 3)) {
 			collector.stop(); // Stop the collector
 
 			// Determine the result based on votes
